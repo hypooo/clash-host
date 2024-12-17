@@ -1,7 +1,7 @@
 ## 适用于 QNAP NAS 的 Clash Docker 镜像 🚀
 1. 自动更新订阅 🔄
 2. 完善的规则集 ⚖️
-3. Yacd Web UI 配置 🖥️
+3. Yacd Web UI 配置 📐
 
 ### 使用教程 📝
 1. 🖥️ clone 代码到机器上
@@ -27,6 +27,8 @@ docker build -t clash:latest .
 docker compose up -d
 # 进入容器
 docker exec -it clash sh
+# 手动更新订阅
+docker exec clash /opt/venv/bin/python3 /usr/local/bin/update_proxies.py
 ```
 
 ### 使用的项目和网站 🧩

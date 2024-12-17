@@ -46,7 +46,7 @@ COPY ./mihomo /usr/local/bin/mihomo
 RUN chmod +x /usr/local/bin/mihomo
 
 # 将 python3 update_proxies.py 写入定时任务，每 6 小时执行一次
-RUN echo "0 */6 * * * python3 /usr/local/bin/update_proxies.py >> /var/log/cron.log 2>&1" > /etc/crontabs/root
+RUN echo "0 */6 * * * /opt/venv/bin/python3 /usr/local/bin/update_proxies.py >> /var/log/cron.log 2>&1" > /etc/crontabs/root
 
 # 暴露 proxy 端口
 EXPOSE 7897
