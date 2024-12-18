@@ -1,5 +1,6 @@
 services:
   clash:
+    build: ./build
     image: clash:latest
     container_name: clash
     network_mode: host

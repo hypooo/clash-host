@@ -6,10 +6,9 @@
 ### 使用教程 📝
 1. 🖥️ clone 代码到机器上
 2. 🔧 修改 `docker-compose.yml` 中的环境变量 `SUBSCRIPTION_URL` 为你的订阅地址
-3. ➡️ 进入 `./build` 目录，执行 `docker build -t clash:latest .` 编译镜像
-4. 🚀 编译完成后进入上级目录 `clash-host` 执行 `docker compose up -d` 启动容器
-5. 🌐 访问 `http://机器IP:9080/?hostname=机器IP&port=9097&secret=` 查看 yacd 界面 🎉
-6. 📱 在手机或电脑上设置系统代理为 `机器IP:7897`
+3. ➡️ 执行 `docker compose up -d --build` 运行容器
+4. 🌐 访问 `http://机器IP:9080/?hostname=机器IP&port=9097&secret=` 查看 yacd 界面 🎉
+5. 📱 在手机或电脑上设置系统代理为 `机器IP:7897`
 
 ### 注意点 🛑
 1. 使用的是 host 网络模式，机器上的端口 7897（代理端口）、9097（mihomo api 端口）、9080（yacd webui端口） 不能被占用
