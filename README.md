@@ -5,14 +5,14 @@
 
 ### 使用教程 📝
 1. 🖥️ clone 代码到机器上
-2. 🔧 修改 `docker-compose.yml` 中的环境变量 `SUBSCRIPTION_URL` 为你的订阅地址
+2. 🔧 修改 `config.yaml` 中的 `proxy-provider-1` 节点下的 `url` 为你的订阅地址，可以添加多个订阅地址例如 `proxy-provider-2` 等等，添加后需要在 `proxy-groups` 的 `use` 里面添加
 3. ➡️ 执行 `docker compose up -d --build` 运行容器
 4. 🌐 访问 `http://机器IP:9080/?hostname=机器IP&port=9097&secret=` 查看 yacd 界面 🎉
 5. 📱 在手机或电脑上设置系统代理为 `机器IP:7897`
 
 ### 注意点 🛑
 1. 使用的是 host 网络模式，机器上的端口 7897（代理端口）、9097（mihomo api 端口）、9080（yacd webui端口） 不能被占用
-2. 默认程序和配置仅在 QNAP TS-466C Container Station 上测试过，其他系统需要自行下载对应架构的 mihomo 程序并重命名为 mihomo 再替换 ./build/mihomo 文件后再编译镜像！！！
+2. 默认程序和配置仅在 `QNAP TS-466C Container Station` 上测试过，其他系统需要修改 `./build/Dockerfile` 中的 `mihomo` 下载链接后再编译镜像！！！
 
 ### 常用命令 ⚙
 ```md
@@ -26,12 +26,11 @@ docker build -t clash:latest .
 docker compose up -d
 # 进入容器
 docker exec -it clash sh
-# 手动更新订阅
-docker exec clash /opt/venv/bin/python3 /usr/local/bin/update_proxies.py
 ```
-
 ### 使用的项目和网站 🧩
 1. [mihomo](https://github.com/MetaCubeX/mihomo)
 2. [Yacd-meta](https://github.com/MetaCubeX/Yacd-meta)
-2. [clash-rules](https://github.com/Loyalsoldier/clash-rules)
-2. [ACL4SSR 订阅转换](https://acl4ssr.netlify.app/)
+3. [geoip](https://github.com/Loyalsoldier/geoip)
+4. [meta-rules-dat](https://github.com/MetaCubeX/meta-rules-dat)
+5. [clash-rules](https://github.com/Loyalsoldier/clash-rules)
+6. [mihomo wiki](https://wiki.metacubex.one/config/general/)
