@@ -4,10 +4,10 @@ dns:
   enhanced-mode: redir-host
   use-system-hosts: false
 external-controller: 0.0.0.0:9097
-secret: ""
+secret: ''
 external-controller-cors:
   allow-origins:
-  - *
+  - '*'
   allow-private-network: true
 log-level: info
 mixed-port: 7897
