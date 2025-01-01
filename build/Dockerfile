@@ -18,8 +18,9 @@ ENV TZ=Asia/Shanghai
 COPY ./nginx-default.conf /etc/nginx/conf.d/default.conf
 COPY ./yacd /usr/share/nginx/html
 
-# 获取 mihomo 程序，默认使用 qts 兼容的程序 mihomo-linux-amd64-compatible，其他系统需要自行更换下载链接
-RUN curl -L https://ghgo.xyz/github.com/MetaCubeX/mihomo/releases/download/v1.19.0/mihomo-linux-amd64-compatible-v1.19.0.gz -o mihomo.gz && \
+# 获取 mihomo 程序最新版本，默认使用 qts 兼容的程序 mihomo-linux-amd64-compatible，其他系统需要自行更换下载链接
+RUN LATEST_VERSION=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/') && \
+    curl -L https://ghgo.xyz/github.com/MetaCubeX/mihomo/releases/download/${LATEST_VERSION}/mihomo-linux-amd64-compatible-${LATEST_VERSION}.gz -o mihomo.gz && \
     gzip -d mihomo.gz && \
     mv mihomo /usr/local/bin/mihomo && \
     chmod +x /usr/local/bin/mihomo
