@@ -5,7 +5,7 @@
 
 ### 使用教程 📝
 1. 🖥️ clone 代码到机器上
-2. 🔧 修改 `config.yaml` 中的 `proxy-provider-1` 节点下的 `url` 为你的订阅地址，可以添加多个订阅地址例如 `proxy-provider-2` 等等，添加后需要在 `proxy-groups` 的 `use` 里面添加
+2. 🔧 修改 `config.yaml` 中的 `proxy-provider-1` 节点下的 `url` 为你的订阅地址，可以添加多个订阅地址例如 `proxy-provider-2` 等等
 3. ➡️ 执行 `docker compose up -d --build` 运行容器
 4. 🌐 访问 `http://机器IP:9080/?hostname=机器IP&port=9097&secret=` 查看 yacd 界面 🎉
 5. 📱 在手机或电脑上设置系统代理为 `机器IP:7897`
