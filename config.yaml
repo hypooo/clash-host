@@ -114,10 +114,9 @@ rule-providers:
     type: http
     url: https://testingcf.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Telegram/Telegram.yaml
 rules:
-  - GEOSITE,category-ai-chat-!cn,🇺🇸 US
+  - GEOSITE,category-ai-!cn,🇺🇸 US
   - GEOSITE,tiktok,🇹🇼 TW
   - GEOSITE,binance,🇸🇬 SG
-  - DOMAIN-SUFFIX,openrouter.ai,🇺🇸 US
   - RULE-SET,telegram,🇸🇬 SG
   - RULE-SET,apple,DIRECT
   - RULE-SET,private,DIRECT
