@@ -1,0 +1,9 @@
+services:
+  clash-host:
+    build: ./build
+    image: clash-host:latest
+    container_name: clash-host
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      - SUBSCRIBE_URL=订阅链接或远程 yml 配置文件链接
