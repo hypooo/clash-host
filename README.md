@@ -4,10 +4,10 @@
 
 ### 使用教程 📝
 1. 🖥️ clone 代码到机器上
-2. 🔧 修改 `SUBSCRIBE_URL` 变量为订阅链接或远程 yml 配置文件链接
+2. 🔧 修改 `docker-compose.yml` 文件中的 `SUBSCRIBE_URL` 变量为订阅链接或远程 yml 配置文件链接
 3. ➡️ 执行 `docker compose up -d --build` 运行容器
 4. 🌐 访问 `http://机器IP:9080` 查看 Web UI 界面 🎉
-5. 🔑 配置 Web UI 的 mihomo api 主机为`机器IP`，端口为`7897`
+5. 🔑 配置 Web UI 的 mihomo api 主机为 `机器IP`，端口为 `7897`
 6. 📱 在手机或电脑上设置系统代理为 `机器IP:7897`
 
 ### 注意点 🛑
