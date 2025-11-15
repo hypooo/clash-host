@@ -18,7 +18,7 @@ ENV TZ=Asia/Shanghai
 COPY ./nginx-default.conf /etc/nginx/conf.d/default.conf
 
 # 获取 https://github.com/Zephyruso/zashboard 的最新版本，下载 https://github.com/Zephyruso/zashboard/releases/download/${LATEST_VERSION}/dist.zip 解压到 /usr/share/nginx/html 目录
-RUN LATEST_VERSION=$(curl -s https://api.github.com/repos/Zephyruso/zashboard/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/') && \
+RUN LATEST_VERSION=$(curl -sL https://api.github.com/repos/Zephyruso/zashboard/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/') && \
     # 下载最新版本的 dist.zip 文件
     curl -L https://github.com/Zephyruso/zashboard/releases/download/${LATEST_VERSION}/dist.zip -o dist.zip && \
     # 删除目标目录下的所有文件
@@ -31,7 +31,7 @@ RUN LATEST_VERSION=$(curl -s https://api.github.com/repos/Zephyruso/zashboard/re
     rm dist.zip
 
 # 获取 https://github.com/MetaCubeX/metacubexd 的最新版本，下载 https://github.com/MetaCubeX/metacubexd/releases/download/${LATEST_VERSION}/compressed-dist.tgz 解压到 /usr/share/nginx/html 目录
-# RUN LATEST_VERSION=$(curl -s https://api.github.com/repos/MetaCubeX/metacubexd/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/') && \
+# RUN LATEST_VERSION=$(curl -sL https://api.github.com/repos/MetaCubeX/metacubexd/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/') && \
 #     # 下载最新版本的 compressed-dist.tgz 文件
 #     curl -L https://github.com/MetaCubeX/metacubexd/releases/download/${LATEST_VERSION}/compressed-dist.tgz -o compressed-dist.tgz && \
 #     # 解压文件到目标目录
@@ -40,14 +40,14 @@ RUN LATEST_VERSION=$(curl -s https://api.github.com/repos/Zephyruso/zashboard/re
 #     rm compressed-dist.tgz
 
 # 获取 mihomo 程序最新版本，默认使用 qts 兼容的程序 mihomo-linux-amd64-compatible，其他系统需要自行更换下载链接
-# RUN LATEST_VERSION=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/') && \
+# RUN LATEST_VERSION=$(curl -sL https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/') && \
 #     curl -L https://github.com/MetaCubeX/mihomo/releases/download/${LATEST_VERSION}/mihomo-linux-amd64-compatible-${LATEST_VERSION}.gz -o mihomo.gz && \
 #     gzip -d mihomo.gz && \
 #     mv mihomo /usr/local/bin/mihomo && \
 #     chmod +x /usr/local/bin/mihomo
 
 # 获取 mihomo 程序 smart 内核最新版本
-RUN VERSION=$(curl -s https://github.com/vernesong/mihomo/releases/download/Prerelease-Alpha/version.txt) && \
+RUN VERSION=$(curl -sL https://github.com/vernesong/mihomo/releases/download/Prerelease-Alpha/version.txt) && \
     curl -L https://github.com/vernesong/mihomo/releases/download/Prerelease-Alpha/mihomo-linux-amd64-compatible-${VERSION}.gz -o mihomo.gz && \
     gzip -d mihomo.gz && \
     mv mihomo /usr/local/bin/mihomo && \
