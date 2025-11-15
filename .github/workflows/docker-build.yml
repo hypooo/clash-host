@@ -1,0 +1,42 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches: [ main ]  # 触发条件：推送到 main 分支
+  schedule:
+    - cron: '0 0 * * *'  # 每天 00:00 触发
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest  # 使用 Ubuntu runner
+    permissions:
+      contents: read
+      packages: write  # 如果用 GHCR，需要此权限
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4  # 检出代码
+
+    - name: Set up QEMU  # 支持 arm64 等多平台构建
+      uses: docker/setup-qemu-action@v3
+
+    - name: Set up Docker Buildx  # 启用 Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to GHCR
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}  # GitHub 自动提供，无需手动设置
+
+    - name: Build and push multi-platform image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./build  # 构建上下文
+        platforms: linux/amd64
+        push: true  # 直接推送
+        tags: |
+          ghcr.io/hypooo/clash-host:latest
+        cache-from: type=gha  # 使用 GitHub Actions 缓存加速
+        cache-to: type=gha,mode=max

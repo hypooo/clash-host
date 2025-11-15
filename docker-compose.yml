@@ -1,7 +1,9 @@
 services:
   clash-host:
-    build: ./build
-    image: clash-host:latest
+    # 本地构建镜像，放开 4、5 行注释并注释掉 6 行
+    # build: ./build
+    # image: clash-host:latest
+    image: m.ixdev.cn/ghcr.io/hypooo/clash-host:latest
     container_name: clash-host
     network_mode: host
     restart: unless-stopped
