@@ -12,8 +12,8 @@
 
 #### 本地构建选项
 如果需要本地构建镜像（例如修改 Dockerfile 后）：
-1. 取消注释 `docker-compose.yml` 中的第4、5行
-2. 注释掉第6行的预构建镜像
+1. 取消注释 `docker-compose.yml` 中的第 4、5 行
+2. 注释掉第 6 行的预构建镜像
 3. 执行 `docker compose up -d --build` 运行容器
 
 ### 注意点 🛑
