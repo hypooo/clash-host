@@ -6,58 +6,58 @@ on:
   schedule:
     - cron: '0 0 * * *'
   workflow_dispatch:
-    inputs:
-      force_build:
-        description: 'Force build even if version unchanged'
-        required: false
-        default: false
-        type: boolean
 
 jobs:
   check-version:
     runs-on: ubuntu-latest
     outputs:
-      should_build: ${{ steps.check.outputs.should_build }}
-      version: ${{ steps.check.outputs.version }}
+      should_build: ${{ steps.compare.outputs.should_build }}
+      version: ${{ steps.fetch.outputs.version }}
     steps:
-    - name: Get current mihomo version
-      id: check
+    - name: Fetch current mihomo version
+      id: fetch
       run: |
         CURRENT_VERSION=$(curl -sL https://github.com/vernesong/mihomo/releases/download/Prerelease-Alpha/version.txt)
         echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
         echo "Current version: $CURRENT_VERSION"
 
-        # 对于 push 事件或强制构建，总是构建
-        if [ "${{ github.event_name }}" = "push" ] || [ "${{ inputs.force_build }}" = "true" ]; then
-          echo "should_build=true" >> $GITHUB_OUTPUT
-          exit 0
-        fi
+    - name: Restore cached version
+      uses: actions/cache/restore@v4
+      with:
+        path: last_version.txt
+        key: mihomo-version-placeholder
+        restore-keys: |
+          mihomo-version-
 
-        # 对于定时任务，检查版本是否变化
-        CACHE_FILE="last_version.txt"
-        if [ -f "$CACHE_FILE" ]; then
-          LAST_VERSION=$(cat "$CACHE_FILE")
-          if [ "$CURRENT_VERSION" = "$LAST_VERSION" ]; then
+    - name: Compare versions
+      id: compare
+      run: |
+        # 检查版本是否变化
+        if [ -f "last_version.txt" ]; then
+          LAST_VERSION=$(cat "last_version.txt")
+          echo "Last version: $LAST_VERSION"
+          if [ "${{ steps.fetch.outputs.version }}" = "$LAST_VERSION" ]; then
             echo "Version unchanged, skipping build"
             echo "should_build=false" >> $GITHUB_OUTPUT
             exit 0
           fi
+        else
+          echo "No cached version found, will build"
         fi
 
         echo "should_build=true" >> $GITHUB_OUTPUT
 
-    - name: Cache version file
-      uses: actions/cache@v4
+    - name: Save version to cache
+      if: steps.compare.outputs.should_build == 'true'
+      uses: actions/cache/save@v4
       with:
         path: last_version.txt
-        key: mihomo-version-${{ steps.check.outputs.version }}
-        restore-keys: |
-          mihomo-version-
+        key: mihomo-version-${{ steps.fetch.outputs.version }}
 
-    - name: Update cached version
-      if: steps.check.outputs.should_build == 'true'
+    - name: Update version file
+      if: steps.compare.outputs.should_build == 'true'
       run: |
-        echo "${{ steps.check.outputs.version }}" > last_version.txt
+        echo "${{ steps.fetch.outputs.version }}" > last_version.txt
 
   build-and-push:
     needs: check-version
