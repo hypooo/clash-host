@@ -14,50 +14,81 @@ jobs:
       should_build: ${{ steps.compare.outputs.should_build }}
       version: ${{ steps.fetch.outputs.version }}
     steps:
-    - name: Fetch current mihomo version
+    - name: Fetch current versions
       id: fetch
       run: |
-        CURRENT_VERSION=$(curl -sL https://github.com/vernesong/mihomo/releases/download/Prerelease-Alpha/version.txt)
-        echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
-        echo "Current version: $CURRENT_VERSION"
+        # Fetch mihomo version
+        MIHOMO_VERSION=$(curl -sL https://github.com/vernesong/mihomo/releases/download/Prerelease-Alpha/version.txt)
+        echo "mihomo_version=$MIHOMO_VERSION" >> $GITHUB_OUTPUT
+        # Keep version output as mihomo version for tagging compatibility
+        echo "version=$MIHOMO_VERSION" >> $GITHUB_OUTPUT
 
-    - name: Restore cached version
+        # Fetch zashboard version
+        ZASHBOARD_VERSION=$(curl -sL https://api.github.com/repos/Zephyruso/zashboard/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+        echo "zashboard_version=$ZASHBOARD_VERSION" >> $GITHUB_OUTPUT
+
+        echo "Current Mihomo: $MIHOMO_VERSION"
+        echo "Current Zashboard: $ZASHBOARD_VERSION"
+
+    - name: Restore cached versions
       uses: actions/cache/restore@v4
       with:
-        path: last_version.txt
-        key: mihomo-version-placeholder
+        path: |
+          last_mihomo_version.txt
+          last_zashboard_version.txt
+        key: versions-cache-placeholder
         restore-keys: |
-          mihomo-version-
+          versions-cache-
 
     - name: Compare versions
       id: compare
       run: |
-        # 检查版本是否变化
-        if [ -f "last_version.txt" ]; then
-          LAST_VERSION=$(cat "last_version.txt")
-          echo "Last version: $LAST_VERSION"
-          if [ "${{ steps.fetch.outputs.version }}" = "$LAST_VERSION" ]; then
-            echo "Version unchanged, skipping build"
-            echo "should_build=false" >> $GITHUB_OUTPUT
-            exit 0
+        SHOULD_BUILD=false
+
+        # Check Mihomo version
+        if [ -f "last_mihomo_version.txt" ]; then
+          LAST_MIHOMO=$(cat last_mihomo_version.txt)
+          if [ "$LAST_MIHOMO" != "${{ steps.fetch.outputs.mihomo_version }}" ]; then
+            echo "Mihomo version changed ($LAST_MIHOMO -> ${{ steps.fetch.outputs.mihomo_version }})"
+            SHOULD_BUILD=true
+          else
+            echo "Mihomo version unchanged ($LAST_MIHOMO)"
           fi
         else
-          echo "No cached version found, will build"
+          echo "No cached Mihomo version found."
+          SHOULD_BUILD=true
         fi
 
-        echo "should_build=true" >> $GITHUB_OUTPUT
+        # Check Zashboard version
+        if [ -f "last_zashboard_version.txt" ]; then
+          LAST_ZASHBOARD=$(cat last_zashboard_version.txt)
+          if [ "$LAST_ZASHBOARD" != "${{ steps.fetch.outputs.zashboard_version }}" ]; then
+            echo "Zashboard version changed ($LAST_ZASHBOARD -> ${{ steps.fetch.outputs.zashboard_version }})"
+            SHOULD_BUILD=true
+          else
+            echo "Zashboard version unchanged ($LAST_ZASHBOARD)"
+          fi
+        else
+          echo "No cached Zashboard version found."
+          SHOULD_BUILD=true
+        fi
 
-    - name: Update version file
+        echo "should_build=$SHOULD_BUILD" >> $GITHUB_OUTPUT
+
+    - name: Update version files
       if: steps.compare.outputs.should_build == 'true'
       run: |
-        echo "${{ steps.fetch.outputs.version }}" > last_version.txt
+        echo "${{ steps.fetch.outputs.mihomo_version }}" > last_mihomo_version.txt
+        echo "${{ steps.fetch.outputs.zashboard_version }}" > last_zashboard_version.txt
 
-    - name: Save version to cache
+    - name: Save versions to cache
       if: steps.compare.outputs.should_build == 'true'
       uses: actions/cache/save@v4
       with:
-        path: last_version.txt
-        key: mihomo-version-${{ steps.fetch.outputs.version }}
+        path: |
+          last_mihomo_version.txt
+          last_zashboard_version.txt
+        key: versions-cache-${{ steps.fetch.outputs.mihomo_version }}-${{ steps.fetch.outputs.zashboard_version }}
 
   build-and-push:
     needs: check-version
@@ -93,4 +124,4 @@ jobs:
         provenance: false
         tags: |
           ghcr.io/hypooo/clash-host:latest
-          ghcr.io/hypooo/clash-host:${{ needs.check-version.outputs.version }}
+          ghcr.io/hypooo/clash-host:mihomo-${{ needs.check-version.outputs.mihomo_version }}_zashboard-${{ needs.check-version.outputs.zashboard_version }}
