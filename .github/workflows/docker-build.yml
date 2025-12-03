@@ -47,17 +47,17 @@ jobs:
 
         echo "should_build=true" >> $GITHUB_OUTPUT
 
+    - name: Update version file
+      if: steps.compare.outputs.should_build == 'true'
+      run: |
+        echo "${{ steps.fetch.outputs.version }}" > last_version.txt
+
     - name: Save version to cache
       if: steps.compare.outputs.should_build == 'true'
       uses: actions/cache/save@v4
       with:
         path: last_version.txt
         key: mihomo-version-${{ steps.fetch.outputs.version }}
-
-    - name: Update version file
-      if: steps.compare.outputs.should_build == 'true'
-      run: |
-        echo "${{ steps.fetch.outputs.version }}" > last_version.txt
 
   build-and-push:
     needs: check-version
