@@ -1,5 +1,9 @@
 FROM nginx:alpine
 
+# 代理支持（必须放在最前面）
+# ARG http_proxy
+# ARG https_proxy
+
 # 替换 APK 源，加速 apk 安装
 # RUN sed -i 's#https\?://dl-cdn.alpinelinux.org/alpine#https://mirrors.cernet.edu.cn/alpine#g' /etc/apk/repositories
 

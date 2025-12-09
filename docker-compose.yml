@@ -1,11 +1,19 @@
 services:
   clash-host:
-    # 若需本地构建镜像，放开 4、5 行注释并注释掉 6 行
-    # build: ./build
+    # 若需本地构建镜像，放开 5、6 行注释并注释掉 10 行。
+    # 若 Build 失败，放开 7、8、9 、10行，并替换为自己的代理地址，修改 build/Dockerfile ，放开 4、5 行。
+    # build:
+       # context: ./build
+       # args:
+          # 如果本地 Build 时候 GitHub 内容下载不下来，需要在此处修改代理
+           # - http_proxy=http://192.168.3.28:7897
+           # - https_proxy=http://192.168.3.28:7897
     # image: clash-host:latest
     image: m.ixdev.cn/ghcr.io/hypooo/clash-host:latest
     container_name: clash-host
     network_mode: host
     restart: unless-stopped
+    volumes:
+      - ./config:/etc/mihomo
     environment:
       - SUBSCRIBE_URL=订阅链接或远程 yml 配置文件链接
