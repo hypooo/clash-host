@@ -2,6 +2,9 @@
 1. 📐 Web UI 配置（默认使用 zashboard，可在 Dockerfile 中修改使用 metacubexd）
 2. ⚙ 使用 smart 内核（可在 Dockerfile 中修改使用默认内核）
 
+### 最佳实践
+配合 sub-store 使用，参考 https://github.com/hypooo/clash-host/issues/5#issuecomment-3635648055
+
 ### 使用教程 📝
 1. 🖥️ clone 代码到机器上
 2. 🔧 修改 `docker-compose.yml` 文件中的 `SUBSCRIBE_URL` 变量为订阅链接或远程 yml 配置文件链接
