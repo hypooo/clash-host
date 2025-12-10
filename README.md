@@ -3,7 +3,7 @@
 2. ⚙ 使用 smart 内核（可在 Dockerfile 中修改使用默认内核）
 
 ### 最佳实践
-配合 sub-store 使用，参考 https://github.com/hypooo/clash-host/issues/5#issuecomment-3635648055
+配合 Sub-Store 使用，参考 https://github.com/hypooo/clash-host/issues/5#issuecomment-3635648055
 
 ### 使用教程 📝
 1. 🖥️ clone 代码到机器上
