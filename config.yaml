@@ -1,0 +1,202 @@
+allow-lan: true
+unified-delay: true
+tcp-concurrent: true
+external-controller: 0.0.0.0:9097
+secret: ""
+external-controller-cors:
+  allow-origins:
+    - "*"
+  allow-private-network: true
+log-level: info
+ipv6: false
+mixed-port: 7897
+mode: rule
+profile:
+  store-selected: true
+  store-fake-ip: true
+geodata-mode: true
+geo-auto-update: true
+geo-update-interval: 24
+geox-url:
+  geoip: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip-lite.dat
+  geosite: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat
+  mmdb: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/country.mmdb
+  asn: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/GeoLite2-ASN.mmdb
+tun:
+  enable: false
+  device: mihomo
+  stack: mixed
+  auto-route: true
+  auto-detect-interface: true
+dns:
+  enable: true
+  ipv6: false
+  enhanced-mode: fake-ip
+  default-nameserver:
+    - 223.5.5.5
+  nameserver:
+    - https://dns.alidns.com/dns-query
+    - https://doh.pub/dns-query
+  fake-ip-filter:
+    - "*"
+    - +.lan
+    - +.local
+    - ntp.*.com
+    - time.*.com
+    - +.msftncsi.com
+    - +.market.xiaomi.com
+    - +.msftconnecttest.com
+    - localhost.ptlogin2.qq.com
+  use-hosts: true
+  use-system-hosts: true
+proxies: []
+proxy-providers:
+  sub:
+    type: http
+    path: ./proxyset/sub.yaml
+    url: 修改为订阅链接地址
+    interval: 21600
+    health-check:
+      enable: true
+      url: https://cp.cloudflare.com
+      interval: 600
+proxy-groups:
+  - name: 节点选择
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Proxy.png
+    interval: 600
+    type: select
+    proxies:
+      - 香港节点
+      - 台湾节点
+      - 美国节点
+      - 日本节点
+      - 韩国节点
+      - 新加坡节点
+      - 所有节点
+  - name: 香港节点
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Hong_Kong.png
+    interval: 600
+    type: smart
+    include-all: true
+    filter: (?i)(香港|HK|Hong\s*Kong)
+  - name: 人工智能
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/AI.png
+    interval: 600
+    type: smart
+    include-all: true
+    filter: (?i)(美国|\bUS\b|United\s*States)
+  - name: 台湾节点
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Taiwan.png
+    interval: 600
+    type: smart
+    include-all: true
+    filter: (?i)(台湾|TW|Taiwan)
+  - name: 美国节点
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/United_States.png
+    interval: 600
+    type: smart
+    include-all: true
+    filter: (?i)(美国|\bUS\b|United\s*States)
+  - name: 日本节点
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Japan.png
+    interval: 600
+    type: smart
+    include-all: true
+    filter: (?i)(日本|JP|Japan)
+  - name: 韩国节点
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Korea.png
+    interval: 600
+    type: smart
+    include-all: true
+    filter: (?i)(韩国|KR|Korea)
+  - name: 新加坡节点
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Singapore.png
+    interval: 600
+    type: smart
+    include-all: true
+    filter: (?i)(新加坡|狮城|SG|Singapore)
+  - name: 所有节点
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Global.png
+    interval: 600
+    type: select
+    include-all: true
+rule-providers:
+  apple:
+    behavior: classical
+    interval: 86400
+    path: ./ruleset/apple.yaml
+    type: http
+    url: https://testingcf.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Apple/Apple_Classical.yaml
+  cncidr:
+    behavior: ipcidr
+    interval: 86400
+    path: ./ruleset/cncidr.yaml
+    type: http
+    url: https://testingcf.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cncidr.txt
+  direct:
+    behavior: domain
+    interval: 86400
+    path: ./ruleset/direct.yaml
+    type: http
+    url: https://testingcf.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt
+  lancidr:
+    behavior: ipcidr
+    interval: 86400
+    path: ./ruleset/lancidr.yaml
+    type: http
+    url: https://testingcf.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.txt
+  private:
+    behavior: domain
+    interval: 86400
+    path: ./ruleset/private.yaml
+    type: http
+    url: https://testingcf.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/private.txt
+  proxy:
+    behavior: domain
+    interval: 86400
+    path: ./ruleset/proxy.yaml
+    type: http
+    url: https://testingcf.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt
+  youtube:
+    behavior: classical
+    interval: 86400
+    path: ./ruleset/youtube.yaml
+    type: http
+    url: https://testingcf.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/YouTube/YouTube.yaml
+  google:
+    behavior: classical
+    interval: 86400
+    path: ./ruleset/google.yaml
+    type: http
+    url: https://testingcf.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Google/Google.yaml
+  telegram:
+    behavior: classical
+    interval: 86400
+    path: ./ruleset/telegram.yaml
+    type: http
+    url: https://testingcf.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Telegram/Telegram.yaml
+rules:
+  - DOMAIN,ptest-1.ipcheck.ing,DIRECT
+  - DOMAIN,ptest-2.ipcheck.ing,节点选择
+  - DOMAIN,ptest-3.ipcheck.ing,香港节点
+  - DOMAIN,ptest-4.ipcheck.ing,台湾节点
+  - DOMAIN,ptest-5.ipcheck.ing,美国节点
+  - DOMAIN,ptest-6.ipcheck.ing,日本节点
+  - DOMAIN,ptest-7.ipcheck.ing,韩国节点
+  - DOMAIN,ptest-8.ipcheck.ing,新加坡节点
+  - GEOSITE,category-games@cn,DIRECT
+  - GEOSITE,category-ai-chat-!cn,人工智能
+  - GEOSITE,category-cryptocurrency,新加坡节点
+  - GEOSITE,tiktok,新加坡节点
+  - GEOSITE,instagram,新加坡节点
+  - RULE-SET,youtube,美国节点
+  - RULE-SET,google,美国节点
+  - RULE-SET,telegram,新加坡节点
+  - RULE-SET,apple,DIRECT
+  - RULE-SET,proxy,节点选择
+  - RULE-SET,private,DIRECT
+  - RULE-SET,direct,DIRECT
+  - RULE-SET,lancidr,DIRECT
+  - RULE-SET,cncidr,DIRECT
+  - GEOIP,CN,DIRECT
+  - MATCH,节点选择

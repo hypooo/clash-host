@@ -9,3 +9,6 @@ services:
     restart: unless-stopped
     environment:
       - SUBSCRIBE_URL=订阅链接或远程 yml 配置文件链接
+    # 若需使用本地配置文件，放开下面 volumes 配置注释，并将 ./config.yaml 替换为本地配置文件路径，优先级高于 SUBSCRIBE_URL 环境变量
+    # volumes:
+    #   - ./config.yaml:/etc/mihomo/config.yaml

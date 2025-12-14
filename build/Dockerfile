@@ -31,13 +31,13 @@ RUN LATEST_VERSION=$(curl -sL https://api.github.com/repos/Zephyruso/zashboard/r
     rm dist.zip
 
 # 获取 https://github.com/MetaCubeX/metacubexd 的最新版本，下载 https://github.com/MetaCubeX/metacubexd/releases/download/${LATEST_VERSION}/compressed-dist.tgz 解压到 /usr/share/nginx/html 目录
-# RUN LATEST_VERSION=$(curl -sL https://api.github.com/repos/MetaCubeX/metacubexd/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/') && \
-#     # 下载最新版本的 compressed-dist.tgz 文件
-#     curl -L https://github.com/MetaCubeX/metacubexd/releases/download/${LATEST_VERSION}/compressed-dist.tgz -o compressed-dist.tgz && \
-#     # 解压文件到目标目录
-#     tar -xzf compressed-dist.tgz -C /usr/share/nginx/html && \
-#     # 删除下载的压缩包
-#     rm compressed-dist.tgz
+RUN LATEST_VERSION=$(curl -sL https://api.github.com/repos/MetaCubeX/metacubexd/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/') && \
+    # 下载最新版本的 compressed-dist.tgz 文件
+    curl -L https://github.com/MetaCubeX/metacubexd/releases/download/${LATEST_VERSION}/compressed-dist.tgz -o compressed-dist.tgz && \
+    # 解压文件到目标目录
+    tar -xzf compressed-dist.tgz -C /usr/share/nginx/html/xd && \
+    # 删除下载的压缩包
+    rm compressed-dist.tgz
 
 # 获取 mihomo 程序最新版本，默认使用 qts 兼容的程序 mihomo-linux-amd64-compatible，其他系统需要自行更换下载链接
 # RUN LATEST_VERSION=$(curl -sL https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/') && \
@@ -59,12 +59,6 @@ RUN mkdir -p /etc/mihomo
 # 复制启动脚本
 COPY ./entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
-
-# 暴露 proxy 端口
-EXPOSE 7897
-
-# 暴露 api 端口
-EXPOSE 9097
 
 # 暴露 nginx 端口
 EXPOSE 9080
