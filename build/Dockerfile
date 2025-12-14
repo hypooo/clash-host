@@ -35,6 +35,7 @@ RUN METACUBEXD_VERSION=$(curl -sL https://api.github.com/repos/MetaCubeX/metacub
     # 下载最新版本的 compressed-dist.tgz 文件
     curl -L https://github.com/MetaCubeX/metacubexd/releases/download/${METACUBEXD_VERSION}/compressed-dist.tgz -o compressed-dist.tgz && \
     # 解压文件到目标目录
+    mkdir -p /usr/share/nginx/html/xd && \
     tar -xzf compressed-dist.tgz -C /usr/share/nginx/html/xd && \
     # 删除下载的压缩包
     rm compressed-dist.tgz

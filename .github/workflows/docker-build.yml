@@ -14,6 +14,7 @@ jobs:
       should_build: ${{ steps.compare.outputs.should_build }}
       mihomo_version: ${{ steps.fetch.outputs.mihomo_version }}
       zashboard_version: ${{ steps.fetch.outputs.zashboard_version }}
+      metacubexd_version: ${{ steps.fetch.outputs.metacubexd_version }}
     steps:
     - name: Fetch current versions
       id: fetch
@@ -26,8 +27,13 @@ jobs:
         ZASHBOARD_VERSION=$(curl -sL https://api.github.com/repos/Zephyruso/zashboard/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
         echo "zashboard_version=$ZASHBOARD_VERSION" >> $GITHUB_OUTPUT
 
+        # Fetch metacubexd version
+        METACUBEXD_VERSION=$(curl -sL https://api.github.com/repos/MetaCubeX/metacubexd/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+        echo "metacubexd_version=$METACUBEXD_VERSION" >> $GITHUB_OUTPUT
+
         echo "Current Mihomo: $MIHOMO_VERSION"
         echo "Current Zashboard: $ZASHBOARD_VERSION"
+        echo "Current Metacubexd: $METACUBEXD_VERSION"
 
     - name: Restore cached versions
       uses: actions/cache/restore@v4
@@ -35,6 +41,7 @@ jobs:
         path: |
           last_mihomo_version.txt
           last_zashboard_version.txt
+          last_metacubexd_version.txt
         key: versions-cache-placeholder
         restore-keys: |
           versions-cache-
@@ -72,6 +79,20 @@ jobs:
           SHOULD_BUILD=true
         fi
 
+        # Check Metacubexd version
+        if [ -f "last_metacubexd_version.txt" ]; then
+          LAST_METACUBEXD=$(cat last_metacubexd_version.txt)
+          if [ "$LAST_METACUBEXD" != "${{ steps.fetch.outputs.metacubexd_version }}" ]; then
+            echo "Metacubexd version changed ($LAST_METACUBEXD -> ${{ steps.fetch.outputs.metacubexd_version }})"
+            SHOULD_BUILD=true
+          else
+            echo "Metacubexd version unchanged ($LAST_METACUBEXD)"
+          fi
+        else
+          echo "No cached Metacubexd version found."
+          SHOULD_BUILD=true
+        fi
+
         echo "should_build=$SHOULD_BUILD" >> $GITHUB_OUTPUT
 
     - name: Update version files
@@ -79,6 +100,7 @@ jobs:
       run: |
         echo "${{ steps.fetch.outputs.mihomo_version }}" > last_mihomo_version.txt
         echo "${{ steps.fetch.outputs.zashboard_version }}" > last_zashboard_version.txt
+        echo "${{ steps.fetch.outputs.metacubexd_version }}" > last_metacubexd_version.txt
 
     - name: Save versions to cache
       if: steps.compare.outputs.should_build == 'true'
@@ -87,7 +109,8 @@ jobs:
         path: |
           last_mihomo_version.txt
           last_zashboard_version.txt
-        key: versions-cache-${{ steps.fetch.outputs.mihomo_version }}-${{ steps.fetch.outputs.zashboard_version }}
+          last_metacubexd_version.txt
+        key: versions-cache-${{ steps.fetch.outputs.mihomo_version }}-${{ steps.fetch.outputs.zashboard_version }}-${{ steps.fetch.outputs.metacubexd_version }}
 
   build-and-push:
     needs: check-version
@@ -123,4 +146,4 @@ jobs:
         provenance: false
         tags: |
           ghcr.io/hypooo/clash-host:latest
-          ghcr.io/hypooo/clash-host:mihomo-${{ needs.check-version.outputs.mihomo_version }}_zashboard-${{ needs.check-version.outputs.zashboard_version }}
+          ghcr.io/hypooo/clash-host:mihomo-${{ needs.check-version.outputs.mihomo_version }}_zashboard-${{ needs.check-version.outputs.zashboard_version }}_metacubexd-${{ needs.check-version.outputs.metacubexd_version }}
