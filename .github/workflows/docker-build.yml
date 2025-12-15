@@ -36,7 +36,7 @@ jobs:
         echo "Current Metacubexd: $METACUBEXD_VERSION"
 
     - name: Restore cached versions
-      uses: actions/cache/restore@v4
+      uses: actions/cache/restore@v5
       with:
         path: |
           last_mihomo_version.txt
@@ -104,7 +104,7 @@ jobs:
 
     - name: Save versions to cache
       if: steps.compare.outputs.should_build == 'true'
-      uses: actions/cache/save@v4
+      uses: actions/cache/save@v5
       with:
         path: |
           last_mihomo_version.txt
