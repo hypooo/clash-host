@@ -95,23 +95,6 @@ jobs:
 
         echo "should_build=$SHOULD_BUILD" >> $GITHUB_OUTPUT
 
-    - name: Update version files
-      if: steps.compare.outputs.should_build == 'true'
-      run: |
-        echo "${{ steps.fetch.outputs.mihomo_version }}" > last_mihomo_version.txt
-        echo "${{ steps.fetch.outputs.zashboard_version }}" > last_zashboard_version.txt
-        echo "${{ steps.fetch.outputs.metacubexd_version }}" > last_metacubexd_version.txt
-
-    - name: Save versions to cache
-      if: steps.compare.outputs.should_build == 'true'
-      uses: actions/cache/save@v5
-      with:
-        path: |
-          last_mihomo_version.txt
-          last_zashboard_version.txt
-          last_metacubexd_version.txt
-        key: versions-cache-${{ steps.fetch.outputs.mihomo_version }}-${{ steps.fetch.outputs.zashboard_version }}-${{ steps.fetch.outputs.metacubexd_version }}
-
   build-and-push:
     needs: check-version
     if: needs.check-version.outputs.should_build == 'true'
@@ -147,3 +130,18 @@ jobs:
         tags: |
           ghcr.io/hypooo/clash-host:latest
           ghcr.io/hypooo/clash-host:mihomo-${{ needs.check-version.outputs.mihomo_version }}_zashboard-${{ needs.check-version.outputs.zashboard_version }}_metacubexd-${{ needs.check-version.outputs.metacubexd_version }}
+
+    - name: Update version files
+      run: |
+        echo "${{ needs.check-version.outputs.mihomo_version }}" > last_mihomo_version.txt
+        echo "${{ needs.check-version.outputs.zashboard_version }}" > last_zashboard_version.txt
+        echo "${{ needs.check-version.outputs.metacubexd_version }}" > last_metacubexd_version.txt
+
+    - name: Save versions to cache
+      uses: actions/cache/save@v5
+      with:
+        path: |
+          last_mihomo_version.txt
+          last_zashboard_version.txt
+          last_metacubexd_version.txt
+        key: versions-cache-${{ needs.check-version.outputs.mihomo_version }}-${{ needs.check-version.outputs.zashboard_version }}-${{ needs.check-version.outputs.metacubexd_version }}
