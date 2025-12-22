@@ -24,11 +24,11 @@ jobs:
         echo "mihomo_version=$MIHOMO_VERSION" >> $GITHUB_OUTPUT
 
         # Fetch zashboard version
-        ZASHBOARD_VERSION=$(curl -sL https://api.github.com/repos/Zephyruso/zashboard/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+        ZASHBOARD_VERSION=$(curl -sL https://api.github.com/repos/Zephyruso/zashboard/releases/latest | jq -r '.tag_name')
         echo "zashboard_version=$ZASHBOARD_VERSION" >> $GITHUB_OUTPUT
 
         # Fetch metacubexd version
-        METACUBEXD_VERSION=$(curl -sL https://api.github.com/repos/MetaCubeX/metacubexd/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+        METACUBEXD_VERSION=$(curl -sL https://api.github.com/repos/MetaCubeX/metacubexd/releases/latest | jq -r '.tag_name')
         echo "metacubexd_version=$METACUBEXD_VERSION" >> $GITHUB_OUTPUT
 
         echo "Current Mihomo: $MIHOMO_VERSION"
