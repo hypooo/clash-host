@@ -1,10 +1,15 @@
 FROM nginx:alpine
 
+# 定义构建参数
+ARG ZASHBOARD_VERSION
+ARG METACUBEXD_VERSION
+ARG MIHOMO_VERSION
+
 # 替换 APK 源，加速 apk 安装
 # RUN sed -i 's#https\?://dl-cdn.alpinelinux.org/alpine#https://mirrors.cernet.edu.cn/alpine#g' /etc/apk/repositories
 
 # 安装系统依赖和 tzdata 以设置时区
-RUN apk add --no-cache tzdata unzip jq
+RUN apk add --no-cache tzdata unzip
 
 # 设置时区为 "Asia/Shanghai"
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
@@ -17,20 +22,16 @@ ENV TZ=Asia/Shanghai
 # 复制 nginx 配置文件
 COPY ./nginx-default.conf /etc/nginx/conf.d/default.conf
 
-# 获取 https://github.com/Zephyruso/zashboard 的最新版本
-# 下载 dist.zip 解压到 /usr/share/nginx/html 目录
-RUN ZASHBOARD_VERSION=$(curl -sL https://api.github.com/repos/Zephyruso/zashboard/releases/latest | jq -r '.tag_name') && \
-    curl -L https://github.com/Zephyruso/zashboard/releases/download/${ZASHBOARD_VERSION}/dist.zip -o dist.zip && \
+# 下载 zashboard 到 /usr/share/nginx/html 目录
+RUN curl -L https://github.com/Zephyruso/zashboard/releases/download/${ZASHBOARD_VERSION}/dist.zip -o dist.zip && \
     rm -rf /usr/share/nginx/html/* && \
     unzip dist.zip -d /usr/share/nginx/html && \
     mv /usr/share/nginx/html/dist/* /usr/share/nginx/html/ && \
     rm -rf /usr/share/nginx/html/dist && \
     rm dist.zip
 
-# 获取 https://github.com/MetaCubeX/metacubexd 的最新版本
-# 下载 compressed-dist.tgz 解压到 /usr/share/nginx/html/xd 目录
-RUN METACUBEXD_VERSION=$(curl -sL https://api.github.com/repos/MetaCubeX/metacubexd/releases/latest | jq -r '.tag_name') && \
-    curl -L https://github.com/MetaCubeX/metacubexd/releases/download/${METACUBEXD_VERSION}/compressed-dist.tgz -o compressed-dist.tgz && \
+# 下载 metacubexd 到 /usr/share/nginx/html/xd 目录
+RUN curl -L https://github.com/MetaCubeX/metacubexd/releases/download/${METACUBEXD_VERSION}/compressed-dist.tgz -o compressed-dist.tgz && \
     mkdir -p /usr/share/nginx/html/xd && \
     tar -xzf compressed-dist.tgz -C /usr/share/nginx/html/xd && \
     rm compressed-dist.tgz
@@ -42,9 +43,8 @@ RUN METACUBEXD_VERSION=$(curl -sL https://api.github.com/repos/MetaCubeX/metacub
 #     mv mihomo /usr/local/bin/mihomo && \
 #     chmod +x /usr/local/bin/mihomo
 
-# 获取 mihomo 程序 smart 内核最新版本
-RUN MIHOMO_SMART_VERSION=$(curl -sL https://github.com/vernesong/mihomo/releases/download/Prerelease-Alpha/version.txt) && \
-    curl -L https://github.com/vernesong/mihomo/releases/download/Prerelease-Alpha/mihomo-linux-amd64-compatible-${MIHOMO_SMART_VERSION}.gz -o mihomo.gz && \
+# 下载 mihomo 程序 smart 内核
+RUN curl -L https://github.com/vernesong/mihomo/releases/download/Prerelease-Alpha/mihomo-linux-amd64-compatible-${MIHOMO_VERSION}.gz -o mihomo.gz && \
     gzip -d mihomo.gz && \
     mv mihomo /usr/local/bin/mihomo && \
     chmod +x /usr/local/bin/mihomo

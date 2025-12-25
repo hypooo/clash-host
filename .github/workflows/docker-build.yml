@@ -127,6 +127,10 @@ jobs:
         platforms: linux/amd64
         push: true
         provenance: false
+        build-args: |
+          ZASHBOARD_VERSION=${{ needs.check-version.outputs.zashboard_version }}
+          METACUBEXD_VERSION=${{ needs.check-version.outputs.metacubexd_version }}
+          MIHOMO_VERSION=${{ needs.check-version.outputs.mihomo_version }}
         tags: |
           ghcr.io/hypooo/clash-host:latest
           ghcr.io/hypooo/clash-host:mihomo-${{ needs.check-version.outputs.mihomo_version }}_zashboard-${{ needs.check-version.outputs.zashboard_version }}_metacubexd-${{ needs.check-version.outputs.metacubexd_version }}
